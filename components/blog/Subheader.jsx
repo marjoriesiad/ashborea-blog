@@ -12,7 +12,7 @@ export default function SubHeader({ onCategorySelect }) {
   }, [])
 
   return (
-    <div className="bg-header-secondary text-white p-2 flex gap-4 overflow-x-auto">
+    <div className="px-4 py-4 bg-header-secondary text-white p-2 flex gap-4 overflow-x-auto">
       <button
         onClick={() => onCategorySelect(null)}
         className="hover:underline"

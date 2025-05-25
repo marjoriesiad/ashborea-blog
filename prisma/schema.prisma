@@ -27,6 +27,7 @@ model BlogPost {
   title      String
   slug       String     @unique
   content    String
+  coverImage String?
   createdAt  DateTime   @default(now())
 
   category   Category   @relation(fields: [categoryId], references: [id])

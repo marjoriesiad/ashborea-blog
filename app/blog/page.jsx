@@ -2,19 +2,21 @@
 
 import { useEffect, useState } from 'react'
 import SubHeader from '@/components/blog/Subheader'
-import Link from 'next/link'
+import PostCard from '@/components/blog/PostCard'
 
 export default function BlogPage() {
   const [posts, setPosts] = useState([])
   const [filteredPosts, setFilteredPosts] = useState([])
   const [selectedCategory, setSelectedCategory] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/posts') // appelle tous les articles
+    fetch('/api/posts')
       .then((res) => res.json())
       .then((data) => {
         setPosts(data)
         setFilteredPosts(data)
+        setLoading(false)
       })
   }, [])
 
@@ -24,27 +26,26 @@ export default function BlogPage() {
     if (!slug) {
       setFilteredPosts(posts)
     } else {
-      setFilteredPosts(posts.filter((post) => post.category.slug === slug))
+      const filtered = posts.filter((post) => post.category.slug === slug)
+      setFilteredPosts(filtered)
     }
   }
 
   return (
     <div>
       <SubHeader onCategorySelect={handleCategorySelect} />
+
       <div className="p-4">
-        {filteredPosts.length === 0 ? (
+        {loading ? (
+          <p>Chargement des articles...</p>
+        ) : filteredPosts.length === 0 ? (
           <p>Aucun article trouvé pour cette catégorie.</p>
         ) : (
-          filteredPosts.map((post) => (
-            <div key={post.id} className="mb-4">
-              <Link href={`/blog/${post.slug}`} className="text-xl font-semibold hover:underline">
-                {post.title}
-              </Link>
-              <p className="text-sm text-gray-600">
-                Catégorie : {post.category.name}
-              </p>
-            </div>
-          ))
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredPosts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
         )}
       </div>
     </div>
